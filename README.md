@@ -1,6 +1,6 @@
 # paste-json-as-reactive-form-builder README
 
-This is the README for your extension "paste-json-as-reactive-form-builder". After writing up a brief description, we recommend including the following sections.
+Generate angular reactive form with simple json values. Just copy the json text and open a new tab in vs code editor and press ctrl+shift+p you will ask your form name. that's it you will get your angular reactive form.
 
 ## Features
 
@@ -37,7 +37,7 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
+Initial release of paste json as reactive form
 
 ### 1.0.1
 
