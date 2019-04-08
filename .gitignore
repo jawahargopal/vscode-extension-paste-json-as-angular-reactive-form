@@ -62,3 +62,6 @@ typings/
 
 # extension output files
 out/
+
+# visual studio extension files
+*.vsix

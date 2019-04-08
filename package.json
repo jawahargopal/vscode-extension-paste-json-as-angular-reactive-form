@@ -1,14 +1,21 @@
 {
-	"name": "paste-json-as-reactive-form-builder",
-	"displayName": "paste json as reactive form builder",
-	"description": "paste json as angular reative form builder",
-	"version": "0.0.1",
+	"name": "json-2-reactive-form",
+	"displayName": "JSON to Reactive Form",
+	"description": "Paste JSON as Angular Reactive Form",
+	"version": "0.0.2",
 	"icon": "icon.png",
 	"publisher": "jawahargopal",
 	"author": {
 		"name": "jawahar gopal",
 		"email": "gjawahargopal@gmail.com"
 	},
+	"contributors": [
+		{
+			"name": "Vinothkumar Arputharaj",
+			"email": "vino4all@gmail.com",
+			"url": "https://github.com/vino4all"
+		}
+	],
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -23,7 +30,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.pasteJSONAsReactiveForm"
+		"onCommand:extension.jsonToReactiveForm"
 	],
 	"keywords": [
 		"json",
@@ -35,8 +42,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.pasteJSONAsReactiveForm",
-				"title": "Paste JSON as Reactive Form"
+				"command": "extension.jsonToReactiveForm",
+				"title": "JSON to Reactive Form"
 			}
 		]
 	},
