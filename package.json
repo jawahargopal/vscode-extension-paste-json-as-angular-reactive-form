@@ -1,5 +1,5 @@
 {
-	"name": "paste-json-as-reactive-form-builder",
+	"name": "json-2-reactive-form",
 	"displayName": "JSON to Reactive Form",
 	"description": "Paste JSON as Angular Reactive Form",
 	"version": "0.0.2",
@@ -9,11 +9,13 @@
 		"name": "jawahar gopal",
 		"email": "gjawahargopal@gmail.com"
 	},
-	"contributors": [{
-		"name": "Vinothkumar Arputharaj",
-		"email": "vino4all@gmail.com",
-		"url": "https://github.com/vino4all"
-	}],
+	"contributors": [
+		{
+			"name": "Vinothkumar Arputharaj",
+			"email": "vino4all@gmail.com",
+			"url": "https://github.com/vino4all"
+		}
+	],
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -41,36 +43,46 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [{
-			"command": "json2ReactiveForm.fromClipboard",
-			"title": "JSON to Reactive Form: Clipboard"
-		}, {
-			"command": "json2ReactiveForm.fromSelection",
-			"title": "JSON to Reactive Form: Selection"
-		}, {
-			"command": "json2ReactiveForm.fromFile",
-			"title": "JSON to Reactive Form: File"
-		}, {
-			"command": "json2ReactiveForm.pasteFormHere",
-			"title": "JSON to Reactive Form: Cursor Position"
-		}],
-		"menus": {
-			"editor/context": [{
+		"commands": [
+			{
 				"command": "json2ReactiveForm.fromClipboard",
-				"group": "json2ReactiveForm@1"
-			}, {
-				"when": "editorHasSelection",
+				"title": "JSON to Reactive Form: Clipboard"
+			},
+			{
 				"command": "json2ReactiveForm.fromSelection",
-				"group": "json2ReactiveForm@1"
-			}, {
-				"when": "resourceExtname == .json",
+				"title": "JSON to Reactive Form: Selection"
+			},
+			{
 				"command": "json2ReactiveForm.fromFile",
-				"group": "json2ReactiveForm@1"
-			}, {
-				"when": "resourceExtname == .ts",
+				"title": "JSON to Reactive Form: File"
+			},
+			{
 				"command": "json2ReactiveForm.pasteFormHere",
-				"group": "json2ReactiveForm@1"
-			}]
+				"title": "JSON to Reactive Form: Cursor Position"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "json2ReactiveForm.fromClipboard",
+					"group": "json2ReactiveForm@1"
+				},
+				{
+					"when": "editorHasSelection",
+					"command": "json2ReactiveForm.fromSelection",
+					"group": "json2ReactiveForm@1"
+				},
+				{
+					"when": "resourceExtname == .json",
+					"command": "json2ReactiveForm.fromFile",
+					"group": "json2ReactiveForm@1"
+				},
+				{
+					"when": "resourceExtname == .ts",
+					"command": "json2ReactiveForm.pasteFormHere",
+					"group": "json2ReactiveForm@1"
+				}
+			]
 		}
 	},
 	"scripts": {

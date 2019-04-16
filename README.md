@@ -1,4 +1,4 @@
-![JSON to Angular Reactive Form](./assets/icon.png)
+![JSON to Angular Reactive Form](./assets/icon_200.png)
 
 # JSON to Angular Reactive Form 
 
@@ -21,7 +21,7 @@ Generate Angular Reactive Form from JSON copied to the clipboard.
 
 ## Installation
 ```
-ext install paste-json-as-reactive-form-builder
+ext install json-2-reactive-form
 ```
 
 ## Release Notes
