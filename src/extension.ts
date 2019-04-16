@@ -25,21 +25,6 @@ import {
 export function activate(context: ExtensionContext) {
 
 	/**
-	 * Get the component name to be created. The name given by the user will be appended with 'Component'.
-	 * For example, if the user is entering 'user' as the form name, the 'userComponent' will be assigned 
-	 * as the name of the Component.
-	 * The component will be created in the selected folder in the VS Code file explorer window.
-	 *
-	 * @returns {Promise<string>}
-	 */
-	async function promptComponentName(): Promise<string> {
-		let componentName = await window.showInputBox({
-			prompt: "Component Name?"
-		});
-		return componentName || 'Sample';
-	}
-
-	/**
 	 * Get the form name to be created. The name given by the user will be appended with 'Form'.
 	 * For example, if the user is entering 'user' as the form name, the 'userForm' will be assigned 
 	 * as the name of the Form.
