@@ -1,5 +1,5 @@
 {
-	"name": "json-2-reactive-form",
+	"name": "paste-json-as-reactive-form-builder",
 	"displayName": "JSON to Reactive Form",
 	"description": "Paste JSON as Angular Reactive Form",
 	"version": "0.0.2",
