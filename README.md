@@ -1,5 +1,7 @@
 ![JSON to Angular Reactive Form](./assets/icon_200.png)
 
+[![Build Status](https://travis-ci.org/jawahargopal/vscode-extension-paste-json-as-angular-reactive-form.svg?branch=master)](https://travis-ci.org/jawahargopal/vscode-extension-paste-json-as-angular-reactive-form)
+
 # JSON to Angular Reactive Form 
 
 Generate Angular Reactive Form with simple json values. Just copy the json text and open a new tab in vs code editor and press ctrl+shift+p you will ask your form name. that's it you will get your angular reactive form.
