@@ -1,65 +1,40 @@
-# paste-json-as-reactive-form-builder README
+![JSON to Angular Reactive Form](./assets/icon.png)
 
-Generate angular reactive form with simple json values. Just copy the json text and open a new tab in vs code editor and press ctrl+shift+p you will ask your form name. that's it you will get your angular reactive form.
+# JSON to Angular Reactive Form 
+
+Generate Angular Reactive Form with simple json values. Just copy the json text and open a new tab in vs code editor and press ctrl+shift+p you will ask your form name. that's it you will get your angular reactive form.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+#### Generate from clipboard
+Generate Angular Reactive Form from JSON copied to the clipboard.
+![From clipboard](./assets/json2ReactiveForm-clipboard.gif)
 
-For example if there is an image subfolder under your extension project workspace:
+#### Generate from selection
+![From selection](./assets/json2ReactiveForm-selection.gif)
 
-\!\[feature X\]\(images/feature-x.png\)
+#### Generate from JSON document
+![From JSON document](./assets/json2ReactiveForm-document.gif)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+#### Generate from clipboard to the cursor position
+![From clipboard to cursor position](./assets/json2ReactiveForm-cursor.gif)
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Installation
+```
+ext install paste-json-as-reactive-form-builder
+```
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+Find the release notes for the extension features below.
 
-### 1.0.0
+### 0.0.1
 
 Initial release of paste json as reactive form
 
-### 1.0.1
+### 0.0.2
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Added support to generate Reactive Form from JSON file.
+Added support to generate Reactive Form from text selection within the file.
+Paste JSON as Reactive Form from clipboard in the cursor position.
+Added editor context menu items for easy access.

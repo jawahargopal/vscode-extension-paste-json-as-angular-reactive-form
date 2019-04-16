@@ -1,14 +1,19 @@
 {
 	"name": "paste-json-as-reactive-form-builder",
-	"displayName": "paste json as reactive form builder",
-	"description": "paste json as angular reative form builder",
-	"version": "0.0.1",
+	"displayName": "JSON to Reactive Form",
+	"description": "Paste JSON as Angular Reactive Form",
+	"version": "0.0.2",
 	"icon": "icon.png",
 	"publisher": "jawahargopal",
 	"author": {
 		"name": "jawahar gopal",
 		"email": "gjawahargopal@gmail.com"
 	},
+	"contributors": [{
+		"name": "Vinothkumar Arputharaj",
+		"email": "vino4all@gmail.com",
+		"url": "https://github.com/vino4all"
+	}],
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -23,7 +28,10 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.pasteJSONAsReactiveForm"
+		"onCommand:json2ReactiveForm.fromClipboard",
+		"onCommand:json2ReactiveForm.fromSelection",
+		"onCommand:json2ReactiveForm.fromFile",
+		"onCommand:json2ReactiveForm.pasteFormHere"
 	],
 	"keywords": [
 		"json",
@@ -33,12 +41,37 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "extension.pasteJSONAsReactiveForm",
-				"title": "Paste JSON as Reactive Form"
-			}
-		]
+		"commands": [{
+			"command": "json2ReactiveForm.fromClipboard",
+			"title": "JSON to Reactive Form: Clipboard"
+		}, {
+			"command": "json2ReactiveForm.fromSelection",
+			"title": "JSON to Reactive Form: Selection"
+		}, {
+			"command": "json2ReactiveForm.fromFile",
+			"title": "JSON to Reactive Form: File"
+		}, {
+			"command": "json2ReactiveForm.pasteFormHere",
+			"title": "JSON to Reactive Form: Cursor Position"
+		}],
+		"menus": {
+			"editor/context": [{
+				"command": "json2ReactiveForm.fromClipboard",
+				"group": "json2ReactiveForm@1"
+			}, {
+				"when": "editorHasSelection",
+				"command": "json2ReactiveForm.fromSelection",
+				"group": "json2ReactiveForm@1"
+			}, {
+				"when": "resourceExtname == .json",
+				"command": "json2ReactiveForm.fromFile",
+				"group": "json2ReactiveForm@1"
+			}, {
+				"when": "resourceExtname == .ts",
+				"command": "json2ReactiveForm.pasteFormHere",
+				"group": "json2ReactiveForm@1"
+			}]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
