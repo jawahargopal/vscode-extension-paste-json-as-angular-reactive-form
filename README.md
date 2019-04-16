@@ -1,4 +1,4 @@
-![JSON to Angular Reactive Form](./assets/icon.png | width=100)
+![JSON to Angular Reactive Form](./assets/icon.png =100x100)
 
 # JSON to Angular Reactive Form 
 
