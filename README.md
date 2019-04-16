@@ -1,4 +1,5 @@
 ![JSON to Angular Reactive Form](./assets/icon_200.png)
+[![Build Status](https://travis-ci.org/jawahargopal/vscode-extension-paste-json-as-angular-reactive-form.svg?branch=master)](https://travis-ci.org/jawahargopal/vscode-extension-paste-json-as-angular-reactive-form)
 
 # JSON to Angular Reactive Form 
 
