@@ -143,14 +143,14 @@ export function activate(context: ExtensionContext) {
 			createFormHereFromClipboard(window.activeTextEditor);
 		})
 	);
-/**
- * Get the generated source code snippets.
- *
- * @param {*} parsedJson
- * @param {string} [componentName]
- * @returns
- */
-async function getGeneratedSourceCode(parsedJson: any, componentName?: string) {
+	/**
+	 * Get the generated source code snippets.
+	 *
+	 * @param {*} parsedJson
+	 * @param {string} [componentName]
+	 * @returns
+	 */
+	async function getGeneratedSourceCode(parsedJson: any, componentName?: string) {
 
 		let formName = await promptFormName();
 
@@ -169,17 +169,13 @@ constructor(private formBuilder: FormBuilder) {
 }
 			
 // TODO : Copy the form builder code to the \`ngOnInit\` callback.
-ngOnInit() {
-	this.${formName}Form = this.formBuilder.group({
-	`;
+ngOnInit() { `;
 
-		for (const key of Object.keys(parsedJson)) {
-			code += key + ` :` + ` ['', Validators.required],
-					`;
-		}
-		code = code.slice(0, -1);
-		code += `
-	});
+		code += await getGeneratedFormCode(parsedJson, formName);
+
+
+		code += 
+`
 }
 
 /**
@@ -208,22 +204,22 @@ onSubmit () {
 	 * @param {*} parsedJson
 	 * @returns
 	 */
-	async function getGeneratedFormCode(parsedJson: any) {
+	async function getGeneratedFormCode(parsedJson: any, frmName?: string) {
 
-		let formName = await promptFormName();
+		const formName = frmName || await promptFormName();
 
 		let code = `
 			
-				this.${formName}Form = this.formBuilder.group({
+	this.${formName}Form = this.formBuilder.group({
 				`;
 
-		for (const key of Object.keys(parsedJson)) {
-			code += key + ` :` + ` ['', Validators.required],
+		for (const key of Object.keys(parsedJson)) { code += `
+		` + key + ` :` + ` ['', Validators.required],
 					`;
 		}
-		code = code.slice(0, -1);
+		code = code.slice(0, -7);
 		code += `
-				});`;
+	});`;
 
 		return code;
 	}
