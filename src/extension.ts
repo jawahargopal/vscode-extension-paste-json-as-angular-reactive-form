@@ -7,13 +7,13 @@ import {
 	formatDocument,
 	getParsedJson,
 	getSelectedText,
-	getTempFilePath,
+	getTempHtmlFilePath,
+	getTempTsFilePath,
 	getViewColumn,
 	jsonIsValid,
 	showErrorMessage,
 	getDocumentText
 } from './util';
-
 
 /**
  * Callback method on extension activation
@@ -23,6 +23,12 @@ import {
  * @param {ExtensionContext} context
  */
 export function activate(context: ExtensionContext) {
+
+	const tmpTsFilePath = getTempTsFilePath();
+	const tmpTsFileUri = Uri.file(tmpTsFilePath);
+
+	const tmpHtmlFilePath = getTempHtmlFilePath();
+	const tmpHtmlFileUri = Uri.file(tmpHtmlFilePath);
 
 	/**
 	 * Get the form name to be created. The name given by the user will be appended with 'Form'.
@@ -35,7 +41,21 @@ export function activate(context: ExtensionContext) {
 		let formName = await window.showInputBox({
 			prompt: "Form name?"
 		});
-		return formName || 'sample';
+		return Promise.resolve(formName || 'sample');
+	}
+
+	/**
+	 * Get the form name to be created. The name given by the user will be appended with 'Form'.
+	 * For example, if the user is entering 'user' as the form name, the 'userForm' will be assigned 
+	 * as the name of the Form.
+	 *
+	 * @returns {Promise<string>}
+	 */
+	async function promptComponentName(): Promise<string> {
+		let formName = await window.showInputBox({
+			prompt: "Component name?"
+		});
+		return Promise.resolve(formName || 'sample');
 	}
 
 	/**
@@ -49,8 +69,7 @@ export function activate(context: ExtensionContext) {
 			return;
 		}
 
-		const parsedJson = JSON.parse(json);
-		let code = await getGeneratedSourceCode(parsedJson);
+		let code = await getParsedJson(json).then(getFormComponentName).then((data) => getGeneratedSourceCode(data.json, data.componentName, convertFormName(data.formName)));
 		textEditor.edit((editBuilder: any) => {
 			editBuilder.replace(new Range(0, 0, 1, 0), code);
 			formatDocument();
@@ -82,22 +101,13 @@ export function activate(context: ExtensionContext) {
 	 *
 	 */
 	async function createFromFromSelection() {
-
-		const tmpFilePath = getTempFilePath();
-		const tmpFileUri = Uri.file(tmpFilePath);
-
 		getSelectedText()
 			.then(checkSelectionLength)
 			.then(getParsedJson)
-			.then((json) => {
-				return getGeneratedSourceCode(json);
-			})
-			.then((sourceCode) => {
-				fs.writeFileSync(tmpFilePath, sourceCode);
-			})
-			.then(() => {
-				commands.executeCommand('vscode.open', tmpFileUri, getViewColumn());
-			})
+			.then(getFormComponentName)
+			.then(getTsHtmlCode)
+			.then(writeFile)
+			.then(openVscode)
 			.then(formatDocument)
 			.catch(showErrorMessage);
 	}
@@ -108,30 +118,21 @@ export function activate(context: ExtensionContext) {
 	 *
 	 */
 	async function createFromFromFile() {
-
-		const tmpFilePath = getTempFilePath();
-		const tmpFileUri = Uri.file(tmpFilePath);
-
 		getDocumentText()
 			.then(checkSelectionLength)
 			.then(getParsedJson)
-			.then((json) => {
-				return getGeneratedSourceCode(json);
-			})
-			.then((sourceCode) => {
-				fs.writeFileSync(tmpFilePath, sourceCode);
-			})
-			.then(() => {
-				commands.executeCommand('vscode.open', tmpFileUri, getViewColumn());
-			})
+			.then(getFormComponentName)
+			.then(getTsHtmlCode)
+			.then(writeFile)
+			.then(openVscode)
 			.then(formatDocument)
 			.catch(showErrorMessage);
 	}
 
 
 	context.subscriptions.push(
-		commands.registerCommand('json2ReactiveForm.fromClipboard', () => {
-			createFromFromClipboard(window.activeTextEditor || {} as TextEditor);
+		commands.registerCommand('json2ReactiveForm.fromClipboard', () => {			
+			createFromFromClipboard(window.activeTextEditor || {} as TextEditor);			
 		}),
 		commands.registerCommand('json2ReactiveForm.fromSelection', (uri: Uri) => {
 			createFromFromSelection();
@@ -143,6 +144,52 @@ export function activate(context: ExtensionContext) {
 			createFormHereFromClipboard(window.activeTextEditor);
 		})
 	);
+
+	function getFormComponentName(json: any) {
+		return promptFormName().then((formName) => {
+			return promptComponentName().then((componentName) => {
+				return {
+					componentName,
+					formName,
+					json
+				};
+			});
+		});
+	}
+
+	function getTsHtmlCode(data: any) {
+		const ts = getGeneratedSourceCode(data.json, data.componentName, convertFormName(data.formName));
+		const html = getGenerateHtmlCode(data.json, convertFormName(data.formName));
+		return Promise.all([ts, html]).then((values) => {
+			return values;
+		})
+	}
+
+	function writeFile(sourceCode: any) {
+		fs.writeFileSync(tmpTsFilePath, sourceCode[0]);
+		fs.writeFileSync(tmpHtmlFilePath, sourceCode[1]);
+	}
+
+	function openVscode() {
+		commands.executeCommand('vscode.open', tmpTsFileUri, getViewColumn());
+		setTimeout(() => {
+			commands.executeCommand('vscode.open', tmpHtmlFileUri, getViewColumn());
+		}, 250);
+	}
+
+	function convertComponentName(name: string, selector:boolean = true) {
+		if (selector) {
+			return name.toLowerCase().split(' ').join('-');
+		}
+		return name.toLowerCase().split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join('');
+	}
+
+	function convertFormName(name: string) {
+		return name.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+			return index === 0 ? word.toLowerCase() : word.toUpperCase();
+		  }).replace(/\s+/g, '');
+	}
+
 	/**
 	 * Get the generated source code snippets.
 	 *
@@ -150,49 +197,81 @@ export function activate(context: ExtensionContext) {
 	 * @param {string} [componentName]
 	 * @returns
 	 */
-	async function getGeneratedSourceCode(parsedJson: any, componentName?: string) {
-
-		let formName = await promptFormName();
+	async function getGeneratedSourceCode(parsedJson: any, componentName: string, formName: string): Promise<string> {
 
 		let code = `
 // TODO : Copy the imports to the top of the file.
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component ({
+	selector: 'app-` + convertComponentName(componentName) + `'
+})
+
+export class ` + convertComponentName(componentName, false) +`Component implements OnInit {
 			
-// TODO : Copy the below declarations inside the component class.
-public ${formName}Form: FormGroup;
-public submitted = false;
+	// TODO : Copy the below declarations inside the component class.
+	public ${formName}Form: FormGroup;
+	public submitted = false;
 
-// TODO : Make sure that the \`FormBuilder\` is injected in the constructor.
-constructor(private formBuilder: FormBuilder) { 
+	// TODO : Make sure that the \`FormBuilder\` is injected in the constructor.
+	constructor(private formBuilder: FormBuilder) { 
 
-}
-			
-// TODO : Copy the form builder code to the \`ngOnInit\` callback.
-ngOnInit() { `;
-
-		code += await getGeneratedFormCode(parsedJson, formName);
-
-
-		code += 
-`
-}
-
-/**
- * Get the form controls.
- */
-get ${formName}FormControls() { return this.${formName}Form.controls; }
-
-/**
- * TODO : Update the documentation
- */
-onSubmit () {
-	this.submitted = true;
-	// Check whether the form is valid
-	if (this.${formName}Form.valid) {
-		// TODO : Do your stuff for ${componentName}
 	}
+				
+	// TODO : Copy the form builder code to the \`ngOnInit\` callback.
+	ngOnInit() { `;
+
+			code += await getGeneratedFormCode(parsedJson, formName);
+
+
+			code += 
+	`
+	}
+
+	/**
+	 * Get the form controls.
+	 */
+	get ${formName}FormControls() { return this.${formName}Form.controls; }
+
+	/**
+	 * TODO : Update the documentation
+	 */
+	onSubmit () {
+		this.submitted = true;
+		// Check whether the form is valid
+		if (this.${formName}Form.valid) {
+			// TODO : Do your stuff for ${componentName}
+		}
+	}
+
 }`;
+
+		return Promise.resolve(code);
+	}
+
+	/**
+	 * Generate the source code for the form builder form JSON. 
+	 * This will not generate the associated imports and variable declarations.
+	 *
+	 * @param {*} parsedJson
+	 * @returns
+	 */
+	async function getGeneratedFormCode(parsedJson: any, frmName: string = 'sample') {
+
+		const formName = convertFormName(frmName || await promptFormName());
+
+		let code = `
+			
+		this.${formName}Form = this.formBuilder.group({`;
+
+			for (const key of Object.keys(parsedJson)) { code += `
+			` + key + ` :` + ` ['', [Validators.required]],
+						`;
+			}
+			code = code.slice(0, -7);
+			code += `
+		});`;
 
 		return code;
 	}
@@ -204,25 +283,26 @@ onSubmit () {
 	 * @param {*} parsedJson
 	 * @returns
 	 */
-	async function getGeneratedFormCode(parsedJson: any, frmName?: string) {
+	async function getGenerateHtmlCode(parsedJson: any, fName: string): Promise<string> {
 
-		const formName = frmName || await promptFormName();
-
-		let code = `
-			
-	this.${formName}Form = this.formBuilder.group({
-				`;
-
-		for (const key of Object.keys(parsedJson)) { code += `
-		` + key + ` :` + ` ['', Validators.required],
-					`;
+		let htmlCode = `<form [formGroup]="` + fName + `" name="` + `" id="` + fName  + `" novalidate>`;
+		for (const key of Object.keys(parsedJson)) {
+			htmlCode += `
+	<div class="form-group">
+		<label for ="` + key + `">` + key + `</label>`;
+			htmlCode += `
+		<input type="text" class="form-control" formControlName="` + key + `" name="` + key +`"/>`;
+			htmlCode += `
+	<div>`;
 		}
-		code = code.slice(0, -7);
-		code += `
-	});`;
-
-		return code;
-	}
+		htmlCode += `
+	<div class="form-group">
+		<button class="btn btn-primary" (click)="onSumbit()">Register</button>
+	</div>
+</form>`;
+		return Promise.resolve(htmlCode);
+			
+		}
 }
 /**
  * Callback method to handle extension deactivation.
