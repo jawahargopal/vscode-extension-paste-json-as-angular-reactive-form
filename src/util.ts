@@ -4,13 +4,24 @@ import { TextEditor, Uri, ViewColumn, window, commands } from 'vscode';
 
 
 /**
- * Get the temporary file path.
+ * Get the temporary ts file path.
  *
  * @export
  * @returns
  */
-export function getTempFilePath() {
+export function getTempTsFilePath() {
     const tmpFilePath = path.join(os.tmpdir(), 'json-to-reactive-form.ts');
+    return tmpFilePath;
+}
+
+/**
+ * Get the temporary html file path.
+ *
+ * @export
+ * @returns
+ */
+export function getTempHtmlFilePath() {
+    const tmpFilePath = path.join(os.tmpdir(), 'json-to-reactive-form.html');
     return tmpFilePath;
 }
 
