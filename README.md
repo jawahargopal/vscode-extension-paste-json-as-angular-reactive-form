@@ -40,3 +40,8 @@ Added support to generate Reactive Form from JSON file.
 Added support to generate Reactive Form from text selection within the file.
 Paste JSON as Reactive Form from clipboard in the cursor position.
 Added editor context menu items for easy access.
+
+### 0.0.3
+
+Added html part for fromSelection and fromfile command
+Added support to convert component and form name
