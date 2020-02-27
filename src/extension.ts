@@ -262,14 +262,12 @@ export class ` + convertComponentName(componentName, false) +`Component implemen
 		const formName = convertFormName(frmName || await promptFormName());
 
 		let code = `
-			
 		this.${formName}Form = this.formBuilder.group({`;
 
 			for (const key of Object.keys(parsedJson)) { code += `
-			` + key + ` :` + ` ['', [Validators.required]],
-						`;
+			` + key + ` :` + ` ['', [Validators.required]],`;
 			}
-			code = code.slice(0, -7);
+			code = code.slice(0, -1);
 			code += `
 		});`;
 
@@ -285,19 +283,19 @@ export class ` + convertComponentName(componentName, false) +`Component implemen
 	 */
 	async function getGenerateHtmlCode(parsedJson: any, fName: string): Promise<string> {
 
-		let htmlCode = `<form [formGroup]="` + fName + `" name="` + `" id="` + fName  + `" novalidate>`;
+		let htmlCode = `<form [formGroup]="` + fName + `" (ngSubmit)="onSubmit()">`;
 		for (const key of Object.keys(parsedJson)) {
 			htmlCode += `
 	<div class="form-group">
 		<label for ="` + key + `">` + key + `</label>`;
 			htmlCode += `
-		<input type="text" class="form-control" formControlName="` + key + `" name="` + key +`"/>`;
+		<input type="text" class="form-control" formControlName="` + key + `"/>`;
 			htmlCode += `
 	<div>`;
 		}
 		htmlCode += `
 	<div class="form-group">
-		<button class="btn btn-primary" (click)="onSumbit()">Register</button>
+		<button class="btn btn-primary">Register</button>
 	</div>
 </form>`;
 		return Promise.resolve(htmlCode);
